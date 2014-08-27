@@ -30,15 +30,17 @@ command="$1"
 
 case "$command" in
   create-mirror)
+    source="https://android.googlesource.com/mirror/manifest"
     shift
     cd /mirror
-    repo init -u https://android.googlesource.com/mirror/manifest --mirror
+    test -d .repo || repo init -u "$source" --mirror
     repo sync "$@"
     ;;
   checkout-branch)
     branch="$2"
     shift; shift
-    repo init -u /mirror/platform/manifest.git -b "$branch"
+    cd /mirror
+    test -d .repo || repo init -u /mirror/platform/manifest.git -b "$branch"
     repo sync "$@"
     ;;
   build-all)
