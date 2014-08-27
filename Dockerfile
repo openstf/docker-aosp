@@ -31,20 +31,29 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
       sudo debconf-set-selections && \
     apt-get -y install oracle-java6-installer oracle-java6-set-default
 
-# Enable CCACHE
-ENV USE_CCACHE 1
-
 # Install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo \
       -o /usr/local/bin/repo && \
     chmod +x /usr/local/bin/repo
 
 # Set up workspace
-RUN mkdir /aosp && \
-    git config --global user.email "aosp-builder@example.com" && \
+RUN git config --global user.email "aosp-builder@example.com" && \
     git config --global user.name "AOSP builder" && \
     git config --global color.ui auto
 
+# Volumes for AOSP source
 VOLUME ["/aosp"]
+VOLUME ["/mirror"]
 
+# Build commands must be run in the AOSP source tree
 WORKDIR /aosp
+
+# Volume for external app source
+VOLUME ["/app"]
+
+# Set up entrypoint
+ADD main.sh /
+ENTRYPOINT ["/main.sh"]
+
+# Show help by default
+CMD ["--help"]
