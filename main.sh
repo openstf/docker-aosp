@@ -39,7 +39,6 @@ case "$command" in
   checkout-branch)
     branch="$2"
     shift; shift
-    cd /mirror
     test -d .repo || repo init -u /mirror/platform/manifest.git -b "$branch"
     repo sync "$@"
     ;;
