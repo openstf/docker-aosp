@@ -11,8 +11,8 @@ Commands:
   create-mirror [sync-options]
     Creates a mirror of the AOSP source tree into /mirror.
 
-  clone-branch <branch> [sync-options]
-    Clone a specific branch from /mirror into /aosp.
+  checkout-branch <branch> [sync-options]
+    Checks out a specific branch from /mirror into /aosp.
 
   build-all <target> [make-options]
     Builds everything in the /aosp source tree for <target> (see \`lunch\`).
