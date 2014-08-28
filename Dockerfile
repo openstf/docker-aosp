@@ -51,6 +51,9 @@ WORKDIR /aosp
 # Volume for external app source
 VOLUME ["/app"]
 
+# Volume for build artifacts
+VOLUME ["/artifacts"]
+
 # Set up entrypoint
 ADD main.sh /
 ENTRYPOINT ["/main.sh"]

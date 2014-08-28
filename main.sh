@@ -55,8 +55,16 @@ case "$command" in
     source build/envsetup.sh
     lunch "$target"
     trap "{ rm -f /aosp/external/$module; exit 1 }" EXIT
-    ln -s /app /aosp/external/"$module"
+    ln -s /app "/aosp/external/$module"
     make "$module" "$@"
+    artifacts=(
+      "$OUT/obj/STATIC_LIBRARIES/lib${module}_intermediates/lib${module}.a"
+      "$OUT/system/lib/lib${module}.so"
+      "$OUT/system/bin/$module"
+    )
+    for file in $artifacts; do
+      test -f "$file" && cp "$file" /artifacts/
+    done
     ;;
   help | "--help" | "-h")
     usage
