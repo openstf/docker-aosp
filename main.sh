@@ -45,25 +45,33 @@ case "$command" in
   build-all)
     target="$2"
     shift; shift
+    set +u
     source build/envsetup.sh
     lunch "$target"
+    set -u
     make "$@"
     ;;
   build)
     target="$2"; module="$3"
     shift; shift; shift
+    set +u
     source build/envsetup.sh
     lunch "$target"
-    trap "{ rm -f /aosp/external/$module; exit 1 }" EXIT
-    ln -s /app "/aosp/external/$module"
+    set -u
+    module_path="/aosp/external/NOCONFLICT-$module/"
+    rm -rf "$module_path"
+    trap '{ rm -rf "$module_path"; }' EXIT
+    cp -R /app/ "$module_path"
     make "$module" "$@"
     artifacts=(
       "$OUT/obj/STATIC_LIBRARIES/lib${module}_intermediates/lib${module}.a"
       "$OUT/system/lib/lib${module}.so"
       "$OUT/system/bin/$module"
     )
-    for file in $artifacts; do
-      test -f "$file" && cp "$file" /artifacts/
+    for file in "${artifacts[@]}"; do
+      if test -f "$file"; then
+        cp "$file" /artifacts/
+      fi
     done
     ;;
   help | "--help" | "-h")
