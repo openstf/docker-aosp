@@ -56,7 +56,7 @@ case "$command" in
     source build/envsetup.sh
     lunch "$target"
     set -u
-    make "$@"
+    make -j $(nproc) "$@"
     ;;
   build)
     target="$2"; module="$3"
@@ -70,7 +70,7 @@ case "$command" in
     rm -rf "$module_path"
     trap '{ rm -rf "$module_path"; }' EXIT
     cp -R "$APP_PATH/" "$module_path"
-    make "$module" "$@"
+    make "$module" -j $(nproc) "$@"
     artifacts=(
       "$OUT/obj/STATIC_LIBRARIES/${module}_intermediates/${module}.a"
       "$OUT/system/lib/${module}.so"
