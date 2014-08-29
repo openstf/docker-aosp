@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+AOSP_PATH=${AOSP_PATH:-/aosp}
+APP_PATH=${APP_PATH:-/app}
+ARTIFACTS_PATH=${ARTIFACTS_PATH:-/artifacts}
+MIRROR_PATH=${MIRROR_PATH:-/mirror}
+
 usage() {
   cat <<USAGE
 Usage: $0 <command>
@@ -32,19 +37,21 @@ case "$command" in
   create-mirror)
     source="https://android.googlesource.com/mirror/manifest"
     shift
-    cd /mirror
+    cd "$MIRROR_PATH"
     test -d .repo || repo init -u "$source" --mirror
     repo sync "$@"
     ;;
   checkout-branch)
     branch="$2"
     shift; shift
-    test -d .repo || repo init -u /mirror/platform/manifest.git -b "$branch"
+    cd "$AOSP_PATH"
+    test -d .repo || repo init -u "$MIRROR_PATH/platform/manifest.git" -b "$branch"
     repo sync "$@"
     ;;
   build-all)
     target="$2"
     shift; shift
+    cd "$AOSP_PATH"
     set +u
     source build/envsetup.sh
     lunch "$target"
@@ -54,14 +61,15 @@ case "$command" in
   build)
     target="$2"; module="$3"
     shift; shift; shift
+    cd "$AOSP_PATH"
     set +u
     source build/envsetup.sh
     lunch "$target"
     set -u
-    module_path="/aosp/external/NOCONFLICT-$module/"
+    module_path="$AOSP_PATH/external/NOCONFLICT-$module/"
     rm -rf "$module_path"
     trap '{ rm -rf "$module_path"; }' EXIT
-    cp -R /app/ "$module_path"
+    cp -R "$APP_PATH/" "$module_path"
     make "$module" "$@"
     artifacts=(
       "$OUT/obj/STATIC_LIBRARIES/lib${module}_intermediates/lib${module}.a"
@@ -70,7 +78,7 @@ case "$command" in
     )
     for file in "${artifacts[@]}"; do
       if test -f "$file"; then
-        cp "$file" /artifacts/
+        cp "$file" "$ARTIFACTS_PATH/"
       fi
     done
     ;;
