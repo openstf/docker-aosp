@@ -72,8 +72,8 @@ case "$command" in
     cp -R "$APP_PATH/" "$module_path"
     make "$module" "$@"
     artifacts=(
-      "$OUT/obj/STATIC_LIBRARIES/lib${module}_intermediates/lib${module}.a"
-      "$OUT/system/lib/lib${module}.so"
+      "$OUT/obj/STATIC_LIBRARIES/${module}_intermediates/${module}.a"
+      "$OUT/system/lib/${module}.so"
       "$OUT/system/bin/$module"
     )
     for file in "${artifacts[@]}"; do
