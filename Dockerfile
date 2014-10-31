@@ -4,8 +4,7 @@ MAINTAINER Simo Kinnunen
 # Update
 RUN export DEBIAN_FRONTEND=noninteractive && \
     dpkg --add-architecture i386 && \
-    apt-get update && \
-    apt-get -y install software-properties-common
+    apt-get update
 
 # Install AOSP dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -23,13 +22,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # Install JDK
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    add-apt-repository ppa:webupd8team/java && \
-    apt-get update && \
-    echo debconf shared/accepted-oracle-license-v1-1 select true | \
-      sudo debconf-set-selections && \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | \
-      sudo debconf-set-selections && \
-    apt-get -y install oracle-java6-installer oracle-java6-set-default
+    apt-get -y install openjdk-7-jdk
 
 # Install repo tool
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo \
