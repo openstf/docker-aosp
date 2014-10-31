@@ -14,19 +14,56 @@ Usage: $0 <command>
 Commands:
 
   create-mirror [sync-options]
+
+    Required volumes:
+      /mirror     For the AOSP mirror (see create-mirror)
+
     Creates a mirror of the AOSP source tree into /mirror.
 
   checkout-branch <branch> [sync-options]
+
+    Required volumes:
+      /mirror     For the AOSP mirror (see create-mirror)
+      /aosp       For the AOSP branch checkout
+
     Checks out a specific branch from /mirror into /aosp.
 
   build-all <target> [make-options]
-    Builds everything in the /aosp source tree for <target> (see \`lunch\`).
+
+    Required volumes:
+      /aosp       For the AOSP branch checkout (see checkout-branch)
+
+    Builds everything in the /aosp source tree for <target> (use
+    \`source build/envsetup.sh && lunch\` to check for available targets,
+    which may change between SDK levels).
 
   build <target> <local-module> [make-options]
-    Builds <local-module> for <target> (see \`lunch\`) after adding /app
-    to /aosp/external/<local-module>.
+
+    Required volumes:
+      /app        For your app code (i.e. an Android.mk containing folder)
+      /aosp       For the AOSP branch checkout (see checkout-branch)
+      /artifacts  For build artifacts
+
+    Builds <local-module> for <target> (see \`lunch\`) after copying /app
+    to /aosp/external/MY_<local-module>. <local-module> must not conflict
+    with with any built-in project or your module will not build. The
+    prefix is added so that even if you accidentally do use a built-in
+    name, at the very least you won't overwrite the files. Note that
+    <local-module> must match the LOCAL_MODULE value in your Android.mk
+    exactly. You will also need to set `LOCAL_MODULE_TAGS := optional` in
+    your Android.mk because the build system requires it.
+
+    After a successful build any produced shared/static libraries
+    and executables are copied to /artifacts.
+
+    The first build may take a very, very long time as many dependencies
+    may have to be built before <local-module>.
+
+    You should use the 'jdk6' tag for Android 4.4 and lower. For newer
+    versions you have to use the 'jdk7' tag.
 
   help
+
     Shows this.
 USAGE
 }
@@ -66,9 +103,8 @@ case "$command" in
     source build/envsetup.sh
     lunch "$target"
     set -u
-    module_path="$AOSP_PATH/external/NOCONFLICT-$module/"
+    module_path="$AOSP_PATH/external/MY_$module/"
     rm -rf "$module_path"
-    trap '{ rm -rf "$module_path"; }' EXIT
     cp -R "$APP_PATH/" "$module_path"
     make "$module" -j $(nproc) "$@"
     artifacts=(

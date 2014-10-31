@@ -55,8 +55,7 @@ VOLUME ["/app"]
 VOLUME ["/artifacts"]
 
 # Set up entrypoint
-ADD main.sh /
-ENTRYPOINT ["/main.sh"]
+ADD aosp.sh /
 
 # Show help by default
-CMD ["--help"]
+CMD ["/aosp.sh", "--help"]
