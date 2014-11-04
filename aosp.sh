@@ -20,10 +20,11 @@ Commands:
 
     Creates a mirror of the AOSP source tree into /mirror.
 
-  checkout-branch <branch> [sync-options]
+  checkout-branch [--no-mirror] <branch> [sync-options]
 
     Required volumes:
-      /mirror     For the AOSP mirror (see create-mirror)
+      /mirror     For the AOSP mirror (see create-mirror), unless
+                  the --no-mirror option is given
       /aosp       For the AOSP branch checkout
 
     Checks out a specific branch from /mirror into /aosp.
@@ -79,10 +80,16 @@ case "$command" in
     repo sync "$@"
     ;;
   checkout-branch)
-    branch="$2"
-    shift; shift
     cd "$AOSP_PATH"
-    test -d .repo || repo init -u "$MIRROR_PATH/platform/manifest.git" -b "$branch"
+    if [ "$2" == "--no-mirror" ]; then
+      branch="$3"
+      shift; shift; shift
+      test -d .repo || repo init -b "$branch"
+    else
+      branch="$2"
+      shift; shift
+      test -d .repo || repo init -u "$MIRROR_PATH/platform/manifest.git" -b "$branch"
+    fi
     repo sync "$@"
     ;;
   build-all)
