@@ -80,16 +80,16 @@ case "$command" in
     repo sync "$@"
     ;;
   checkout-branch)
-    cd "$AOSP_PATH"
     if [ "$2" == "--no-mirror" ]; then
-      branch="$3"
-      shift; shift; shift
-      test -d .repo || repo init -b "$branch"
+      manifest="https://android.googlesource.com/platform/manifest"
+      shift
     else
-      branch="$2"
-      shift; shift
-      test -d .repo || repo init -u "$MIRROR_PATH/platform/manifest.git" -b "$branch"
+      manifest="$MIRROR_PATH/platform/manifest.git"
     fi
+    branch="$2"
+    shift; shift
+    cd "$AOSP_PATH"
+    test -d .repo || repo init -u "$manifest" -b "$branch"
     repo sync "$@"
     ;;
   build-all)
