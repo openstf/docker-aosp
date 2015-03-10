@@ -51,7 +51,7 @@ Commands:
     prefix is added so that even if you accidentally do use a built-in
     name, at the very least you won't overwrite the files. Note that
     <local-module> must match the LOCAL_MODULE value in your Android.mk
-    exactly. You will also need to set `LOCAL_MODULE_TAGS := optional` in
+    exactly. You will also need to set \`LOCAL_MODULE_TAGS := optional\` in
     your Android.mk because the build system requires it.
 
     After a successful build any produced shared/static libraries
