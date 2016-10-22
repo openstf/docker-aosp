@@ -1,4 +1,5 @@
 FROM ubuntu:14.04
+MAINTAINER Simo Kinnunen
 
 # Update
 RUN export DEBIAN_FRONTEND=noninteractive && \
@@ -53,8 +54,9 @@ VOLUME ["/app"]
 # Volume for build artifacts
 VOLUME ["/artifacts"]
 
-# Set up entrypoint
-ADD aosp.sh /
+# Set up entrypoint while working around docker/hub-feedback#811
+ADD aosp.sh /usr/local/bin
+RUN ln -s /usr/local/bin/aosp.sh /aosp.sh
 
 # Show help by default
 CMD ["/aosp.sh", "--help"]
