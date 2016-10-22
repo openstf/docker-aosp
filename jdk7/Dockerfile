@@ -1,5 +1,4 @@
 FROM ubuntu:14.04
-MAINTAINER Simo Kinnunen
 
 # Update
 RUN export DEBIAN_FRONTEND=noninteractive && \

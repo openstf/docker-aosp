@@ -9,7 +9,9 @@ So go away now unless you know what you're doing.
 * Create local AOSP mirrors
 * Checkout AOSP branches or tags (from your local mirror or directly)
 * Build your own modules inside any checked out AOSP branches
-* Supports JDK6 (with openstf/aosp:jdk6) and JDK7 (with openstf/aosp:jdk7)
+* Supports JDK6 (with openstf/aosp:jdk6)
+* Supports JDK7 (with openstf/aosp:jdk7)
+* Supports JDK8 (with openstf/aosp:jdk8)
 
 Available as [openstf/aosp](https://registry.hub.docker.com/u/openstf/aosp/) in the Docker Hub Registry.
 
