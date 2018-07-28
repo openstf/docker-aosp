@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+ENV USER root 
+
 # Install AOSP dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
